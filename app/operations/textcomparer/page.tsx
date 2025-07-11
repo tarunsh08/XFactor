@@ -98,7 +98,6 @@ export default function TextComparer() {
       audio.muted = false
       audio.volume = 0
       audio.play().then(() => {
-        // Smooth fade-in
         const fadeIn = setInterval(() => {
           if (audio.volume < 1) {
             audio.volume = Math.min(audio.volume + 0.1, 1)
