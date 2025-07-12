@@ -2,27 +2,66 @@
 
 import { useState } from 'react';
 
+interface VoiceOption {
+  id: string;
+  name: string;
+  gender: string;
+}
+
+const VOICE_OPTIONS: VoiceOption[] = [
+  { id: 'Rachel', name: 'Rachel', gender: 'F' },
+  { id: 'Adam', name: 'Adam', gender: 'M' },
+  { id: 'Bella', name: 'Bella', gender: 'F' },
+];
+
 export default function PodcastPage() {
   const [input, setInput] = useState('');
-  const [voice, setVoice] = useState('Rachel');
+  const [voice, setVoice] = useState(VOICE_OPTIONS[0].id);
   const [language, setLanguage] = useState('en');
   const [audioUrl, setAudioUrl] = useState('');
+  const [summary, setSummary] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleGenerate = async () => {
+    if (!input.trim()) return;
+
     setLoading(true);
+    setError('');
     setAudioUrl('');
+    setSummary('');
 
     try {
-      // (replace with real API)
-      setTimeout(() => {
-        setAudioUrl('/sample.mp3'); // Replace kro with dynamic audio URL
-        setLoading(false);
-      }, 3000);
+      const response = await fetch('/api/podify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: input,
+          voice: voice,
+          language: language,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate podcast');
+      }
+
+      const data = await response.json();
+      setSummary(data.summary);
+      setAudioUrl(data.audioUrl);
     } catch (err) {
-      console.error(err);
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
       setLoading(false);
     }
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    setAudioUrl('');
+    setSummary('');
   };
 
   return (
@@ -30,9 +69,15 @@ export default function PodcastPage() {
       <div className="max-w-3xl w-full bg-white p-8 rounded-2xl shadow-lg space-y-6">
         <h1 className="text-3xl font-bold text-gray-800">🎙️ Turn Blog into Podcast</h1>
 
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+
         <textarea
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleTextChange}
           rows={8}
           className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Paste blog/article URL or text here..."
@@ -44,9 +89,11 @@ export default function PodcastPage() {
             onChange={(e) => setVoice(e.target.value)}
             className="w-full sm:w-1/2 border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-400"
           >
-            <option value="Rachel">Rachel (F)</option>
-            <option value="Adam">Adam (M)</option>
-            <option value="Bella">Bella (F)</option>
+            {VOICE_OPTIONS.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.name} ({option.gender})
+              </option>
+            ))}
           </select>
 
           <select
@@ -67,6 +114,15 @@ export default function PodcastPage() {
         >
           {loading ? 'Generating Audio...' : 'Generate Podcast'}
         </button>
+
+        {summary && (
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold text-gray-700 mb-2">📝 Summary:</h2>
+            <div className="prose max-w-none">
+              {summary}
+            </div>
+          </div>
+        )}
 
         {audioUrl && (
           <div className="mt-6">
