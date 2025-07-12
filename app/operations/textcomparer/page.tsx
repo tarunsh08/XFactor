@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useMotionValue, animate, useTransform, useScroll, useSpring } from 'framer-motion'
 
 // Custom icons as SVG components
@@ -92,7 +93,13 @@ export default function TextComparer() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [mouseX, mouseY])
 
-  const playAudio = () => {
+  const router = useRouter()
+
+const handleGetStarted = () => {
+  router.push('/components/transformation')
+}
+
+const playAudio = () => {
     const audio = document.getElementById("welcomeAudio") as HTMLAudioElement | null
     if (audio) {
       audio.muted = false
@@ -169,44 +176,8 @@ export default function TextComparer() {
         }}
       />
 
-      {/* Floating Orbs */}
-      <motion.div 
-        className="fixed inset-0 overflow-hidden -z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-      >
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            initial={{
-              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-              scale: Math.random() * 0.5 + 0.5
-            }}
-            animate={{
-              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-              rotate: 360,
-              transition: {
-                duration: Math.random() * 20 + 20,
-                repeat: Infinity,
-                repeatType: 'reverse',
-                ease: 'linear'
-              }
-            }}
-            style={{
-              width: `${Math.random() * 150 + 50}px`,
-              height: `${Math.random() * 150 + 50}px`,
-              background: theme === 'dark' 
-                ? `radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)`
-                : `radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%)`,
-              filter: 'blur(2px)',
-            }}
-          />
-        ))}
-      </motion.div>
+
+
 
       {/* Main Content */}
       <motion.div 
@@ -228,7 +199,7 @@ export default function TextComparer() {
               >
                 <CompareIcon className="w-8 h-8 text-violet-600 dark:text-violet-400" />
                 <span className="text-xl font-bold bg-gradient-to-r from-violet-600 to-blue-600 bg-clip-text text-transparent">
-                  ProductName
+                  PodifyAi
                 </span>
               </motion.div>
               
@@ -277,7 +248,7 @@ export default function TextComparer() {
                 whileHover={{ scale: 1.02 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
-                Have Fun
+                Podify your boring blogs
                 <br />
                 <span className="text-5xl md:text-7xl">Like Never Before</span>
               </motion.h1>
@@ -288,7 +259,7 @@ export default function TextComparer() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                Experience the future of something with AI-powered analysis, 
+                Experience the future of podcasts with AI-powered analysis, 
                 real-time highlighting, and lightning-fast performance.
               </motion.p>
             </motion.div>
@@ -334,13 +305,10 @@ export default function TextComparer() {
                   >
                     <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center">
                       <TextWrapIcon className="w-6 h-6 mr-2 text-violet-600" />
-                      Original Text
+                      Before PodifyAi
                     </h3>
                     <div className="bg-white/50 dark:bg-gray-800/50 rounded-xl p-4 h-32 border border-white/30">
-                      <p className="text-gray-700 dark:text-gray-300 text-sm">
-                        The quick brown fox jumps over the lazy dog. 
-                        This is a sample text for comparison.
-                      </p>
+                      <img src="https://plus.unsplash.com/premium_photo-1724061887290-8d78a124cd14?w=500&auto=format&fit=cover&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c3RyZXNzJTIwc3R1ZHl8ZW58MHx8MHx8fDA%3D" alt="" className="h-full w-full object-cover" />
                     </div>
                   </motion.div>
                   
@@ -350,13 +318,10 @@ export default function TextComparer() {
                   >
                     <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center">
                       <CompareIcon className="w-6 h-6 mr-2 text-blue-600" />
-                      Modified Text
+                      After PodifyAi
                     </h3>
                     <div className="bg-white/50 dark:bg-gray-800/50 rounded-xl p-4 h-32 border border-white/30">
-                      <p className="text-gray-700 dark:text-gray-300 text-sm">
-                        The quick <span className="bg-red-200 dark:bg-red-900 px-1 rounded">red</span> fox jumps over the lazy dog. 
-                        This is a sample text for <span className="bg-green-200 dark:bg-green-900 px-1 rounded">advanced</span> comparison.
-                      </p>
+                      <img src="https://media.istockphoto.com/id/522372360/photo/having-fun-and-studying.webp?a=1&b=1&s=612x612&w=0&k=20&c=avHEzo0BLkDEAn239SCfJrGTZOlwjh8xRhZLDUi3r08=" alt="" className="h-full w-full object-cover" />
                     </div>
                   </motion.div>
                 </div>
@@ -457,7 +422,7 @@ export default function TextComparer() {
                   className="group px-10 py-5 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full font-semibold text-xl shadow-2xl hover:shadow-violet-500/25 transition-all duration-300 flex items-center space-x-3 mx-auto"
                 >
                   <SparklingIcon className="w-6 h-6" />
-                  <span>Get Started Now</span>
+                  <span onClick={handleGetStarted}>Get Started Now</span>
                   <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </div>
@@ -475,7 +440,7 @@ export default function TextComparer() {
         >
           <div className="container mx-auto text-center">
             <p className="text-gray-600 dark:text-gray-400">
-              © 2024 ProductName. Crafted with 💜 for text enthusiasts.
+              © 2025 PodifyAi. Crafted with 💜 for text enthusiasts.
             </p>
           </div>
         </motion.footer>
