@@ -26,7 +26,7 @@ export default function PodcastPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
+    <div className="min-h-screen bg-gray-400 p-6 flex flex-col items-center">
       <div className="max-w-3xl w-full bg-white p-8 rounded-2xl shadow-lg space-y-6">
         <h1 className="text-3xl font-bold text-gray-800">🎙️ Turn Blog into Podcast</h1>
 
