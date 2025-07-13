@@ -1,7 +1,6 @@
+// api/podify/route.ts
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
-
-import { ElevenLabsClient as ElevenLabs } from '@elevenlabs/elevenlabs-js';
 import 'dotenv/config';
 
 if (!process.env.ELEVENLABS_API_KEY) {
@@ -12,13 +11,39 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const elevenLabs = new ElevenLabs(process.env.ELEVENLABS_API_KEY);
-    
+async function generateElevenLabsAudio(text: string, voiceId: string) {
+  const response = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+    {
+      method: 'POST',
+      headers: {
+        'xi-api-key': process.env.ELEVENLABS_API_KEY!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: "eleven_monolingual_v2",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.5
+        }
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`ElevenLabs API error: ${error}`);
+  }
+
+  return await response.arrayBuffer();
+}
+
 export async function POST(request: Request) {
   try {
     const { text, voice } = await request.json();
 
-    //Summarize the text using GPT
+    // Summarize the text using GPT
     const summaryResponse = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
@@ -39,16 +64,10 @@ export async function POST(request: Request) {
     }
     const summary = summaryChoice.message.content;
 
-    //Generate audio using ElevenLabs
-    const audio = await elevenLabs.generateAudio(summary, voice);
-
-    //Save audio to Supabase
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_KEY;
-    
-    // TODO: Implement Supabase storage
-    // This is a placeholder URL - you'll need to implement actual storage
-    const audioUrl = `${supabaseUrl}/storage/v1/object/public/podcasts/${Date.now()}.mp3`;
+    // Generate audio using ElevenLabs API
+    const audioData = await generateElevenLabsAudio(summary, voice);
+    const audioBlob = new Blob([audioData], { type: 'audio/mpeg' });
+    const audioUrl = URL.createObjectURL(audioBlob);
 
     return NextResponse.json({
       summary,
@@ -57,7 +76,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate podcast' },
+      { error: error instanceof Error ? error.message : 'Failed to generate podcast' },
       { status: 500 }
     );
   }
