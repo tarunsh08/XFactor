@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useMotionValue, animate, useTransform, useScroll, useSpring } from 'framer-motion'
 
-// Custom icons as SVG components
 const SunIcon = ({ className }: { className: string }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -129,9 +128,9 @@ const playAudio = () => {
 
   const features = [
     { icon: TextWrapIcon, title: "Smart Text Analysis", desc: "Advanced algorithms detect differences instantly" },
-    { icon: CompareIcon, title: "Side-by-Side View", desc: "Compare texts with highlighted changes" },
+    { icon: CompareIcon, title: "Side-by-Side View", desc: "Fast and accurate summary with real audio" },
     { icon: SparklingIcon, title: "AI-Powered", desc: "Machine learning enhances accuracy" },
-    { icon: ZapIcon, title: "Lightning Fast", desc: "Real-time comparison as you type" }
+    { icon: ZapIcon, title: "Lightning Fast", desc: "Real-time generation as per the given data" }
   ]
 
   return (
@@ -271,7 +270,10 @@ const playAudio = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
             >
               <motion.button
-              onClick={playAudio}
+              onClick={() => {
+                playAudio();
+                handleGetStarted();
+              }}
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(139, 92, 246, 0.3)" }}
                 whileTap={{ scale: 0.95 }}
                 className="group px-8 py-4 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full font-semibold text-lg shadow-2xl hover:shadow-violet-500/25 transition-all duration-300 flex items-center space-x-2"
@@ -410,7 +412,7 @@ const playAudio = () => {
                   Ready to Transform Your Workflow?
                 </h2>
                 <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                  Join thousands of professionals who trust ProductName for their daily text analysis needs.
+                  Join thousands of professionals who trust PodifyAi for their daily text analysis needs.
                 </p>
                 <motion.button
                   whileHover={{ 
@@ -422,7 +424,10 @@ const playAudio = () => {
                   className="group px-10 py-5 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full font-semibold text-xl shadow-2xl hover:shadow-violet-500/25 transition-all duration-300 flex items-center space-x-3 mx-auto"
                 >
                   <SparklingIcon className="w-6 h-6" />
-                  <span onClick={handleGetStarted}>Get Started Now</span>
+                  <span onClick={() => {
+                    handleGetStarted();
+                    playAudio();
+                    }}>Get Started Now</span>
                   <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </div>
@@ -440,7 +445,7 @@ const playAudio = () => {
         >
           <div className="container mx-auto text-center">
             <p className="text-gray-600 dark:text-gray-400">
-              © 2025 PodifyAi. Crafted with 💜 for text enthusiasts.
+              © 2025 PodifyAi. Crafted with 💜 for AI learning enthusiasts.
             </p>
           </div>
         </motion.footer>
