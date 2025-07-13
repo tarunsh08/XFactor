@@ -141,7 +141,7 @@ const playAudio = () => {
         className="fixed inset-0 -z-20"
         style={{
           background: `
-            radial-gradient(circle at ${typeof window !== 'undefined' ? smoothMouseX.get() / window.innerWidth * 100 : 50}% ${typeof window !== 'undefined' ? smoothMouseY.get() / window.innerHeight * 100 : 50}%, 
+            radial-gradient(circle at ${typeof window !== 'undefined' ? mousePosition.x / window.innerWidth * 100 : 50}% ${typeof window !== 'undefined' ? mousePosition.y / window.innerHeight * 100 : 50}%, 
               rgba(139, 92, 246, 0.3) 0%, 
               transparent 50%
             ),
